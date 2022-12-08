@@ -1,0 +1,25 @@
+
+nest new campanhaanimal
+
+npm install typeorm pg class-validator class-transformer @nestjs/mapped-types @nestjs/typeorm bcrypt @nestjs/jwt @nestjs/passport @nestjs/config uuid passport-jwt
+npm i --save-dev @types/uuid @types/bcrypt @types/passport-jwt
+
+microservices:
+npm install @nestjs/microservices
+
+
+
+
+
+create a new repository on the command line
+echo "# user-microservice" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/vandrehribeiro/user-microservice.git
+git push -u origin main
+…or push an existing repository from the command line
+git remote add origin https://github.com/vandrehribeiro/user-microservice.git
+git branch -M main
+git push -u origin main

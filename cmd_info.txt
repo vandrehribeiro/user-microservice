@@ -1,0 +1,209 @@
+
+nest new campanhaanimal
+
+npm install typeorm pg class-validator class-transformer @nestjs/mapped-types @nestjs/typeorm bcrypt @nestjs/jwt @nestjs/passport
+
+
+Informacoes:
+dados para cadastro de Usuarios:
+
+Dados pessoais:
+    name: string;
+    email: string;
+    telefone: string;
+    cpf: string;
+    type: string;
+
+
+Endereco:
+    cep: string;
+    city: string;
+    neighborhood: string;
+    state: string;
+    street: string;
+
+Senha:
+    password
+    passwordRepeat
+
+
+
+
+
+
+
+[9:54 AM] Arthur Gabriel Belchior Oliveira Reis
+Usuário:   
+    - cadastro de usuário,
+        login,
+        CRUD,
+        alterar senha separado,
+        recuperar senha - (envia email com token)
+
+    Administrador:
+        - Métricas:
+            - Apadrinhamentos Realizados
+            - Apadrinhamento Cadastrado
+            - Adoções realizadas
+            - Adoções Cadastradas
+            - Campanhas cadastradas
+            - Campanhas Apoiadas
+            - Eventos Cadastrados
+            - CRUD de ongs (Status: Aprovada, Pendente, Recusada)
+                (Recusa de Ong com motivos((Se for outros -> descrição))
+            
+            - Ver  lista usuários cadastrados
+            - filtros (Tutor, Ongs)
+            - Dashboard(Dinheiro arrecedado total, do mês, do dia)
+            - Lista de tutores (opção de excluir) (Usuários transformados em tutores)
+            - Ongs são usuários()
+            - CRUD campanhas(Status: Aprovada, Pendente, Recusada)
+                (Recusa de Ong com motivos((Se for outros -> descrição))
+
+            - Relatório de Campanhas
+            - CRUD eventos Filtro (Ativo/Inativo)
+            - CRUD Volutário(Candidatos) (Status: Aprovada, Pendente, Recusada)
+                (Recusa de Ong com motivos((Se for outros -> descrição))
+
+ONG:
+    - CRUD de animais (com filtro de animais adoção/apadrinhamento)
+        (Status: Aprovada, Pendente, Recusada)
+        (Recusa de Ong com motivos((Se for outros -> descrição))
+    
+    - Filtro campanha, (Porcentagem arrecadada)
+
+
+
+cadastrar animais
+    animais podem ser apadrinhados (lar temporário, continua no site)
+    adotar animal (animal foi salvo)
+    campanha anúncio do animal
+
+
+[9:55 AM] Arthur Gabriel Belchior Oliveira Reis
+    Design do Banco de Dados
+    Listar as funcionalidades
+    Cenários
+    Estrutura API
+    Criar entidades
+    Definir Dtos
+    Criar dtos
+    TDD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[9:56 AM] Arthur Gabriel Belchior Oliveira Reis
+Funcionalidades:
+TELAS DE ENTRAR=======================================================
+    - USUÁRIOS:
+        Cadastrar usuário (POST user {nome, email, senha, confirmar senha)})
+        Logar usuário (POST login {email e senha}) 
+        editar perfil (PUT user {foto, nome, username, bio, genero})
+        get email (GET email by token)
+        Recuperar senha(POST email {email} => envia email com link tokenizado)
+        Alterar senha logado (PATCH {senha atual, nova senha}=> "senha alterada com sucesso")
+
+TELAS DE PUBLICAÇÃO================================================
+    - CLICK:
+        Postar um click (POST click {foto, descrição, acessibilidade, tags})
+        Ver um click (GET)Editar um click (PATCH {descrição, tags, acessibilidade})
+        Deletar um click (DELETE @Params id)
+
+    - ÁLBUNS:
+        Criar álbum (POST {título, clicks(nullable) descrição, visibilidade, contas})
+        ver álbum (GET => {diferenciar usuário dono dos demais})
+        deletar álbum (DELETE => {álbum deletado com sucesso})
+        editar álbum (PUT álbum {título, descrição, visibilidade, contas})
+        adicionar click (PUT {click(toAdd)})remover click (PUT {click(toDelete)})
+        definir visibilidade(público, privado, apenas contasselecionadas, excetocontas selecionadas)(PATCH {visibilidade})
+        adicionar contas de visibilidade (PATCH {conta})
+        remove contas de visibilidade (DELETE {conta})
+    
+    - MURAL:
+        Criar mural (
+            POST {título, click(nullable), descrição, participantes(nullable))})
+        deletar mural (Delete)
+        ver mural (Get)
+        editar mural(PUT {título, click(nullable), descrição, participante})
+        adicionar click (PUT {click})
+        remover click (DELETE {click})
+        adicionar participante (PUT {participante})
+        remover participante (DELETE {participante})
+
+
+
+
+
+[9:56 AM] Arthur Gabriel Belchior Oliveira Reis
+USUÁRIO:
+    TELAS DE ENTRAR:
+        - (Não logado) Usário tenta se cadastrar com email não cadastrado -> 201 Created -> UserDTORecebe {CreateUserDto} Responde {UserDto}
+        - Usuário tenta se cadastrar com email já existente -> 409 ConflictRecebe {CreateUserDto} responde {message}
+        - Usuário tenta se logar com credenciais corretas -> 200 OK -> {token}Recebe {LoginDto} responde {token}
+        - Usuário tenta se logar com credenciais incorretas -> 401 UnauthorizedRecebe {LoginDto} responde {message}
+        - Usuários tenta editar seu perfil -> 202 Accepted -> ProfileDTORecebe {UpdateUserDto} responde {ProfileDto}
+        - Usuário tenta editar perfil de outra pessoa -> 403 ForbiddenRecebe {UpdateUserDto} responed {message}
+        - (Não logado) Usuário tenta recuperar senha pelo email -> email com códigoRecebe {recoverPasswordDto} responde {message}
+        - Usuário coloca código correto para recuperar senha e recebe um tokenRecebe {changePasswordDto} responde {message}
+        - Usuário coloca um código incorreto para recuperar senha -> 401 UnauthorizedRecebe {changePasswordDto} responde {message}
+
+TELA DE CONFIGURAÇÂO:
+INFORMAÇÕES DA CONTA:
+    - Usuário tenta alterar senha(logado) -> 202 Accpeted
+    - Recebe {changePasswordDto} Responde {message}
+    - Usuário tenta alterar senha com token incorreto -> 401 Unauthorized
+    - Recebe {changePasswordDto} Responde {message}
+    - Usuário tenta alterar tipo de conta -> 202 Accepted
+    - Recebe {changeAccountTypeDto} Responde {message}
+ALTERAR:
+    - Usuário tenta alterar email com email válido e inexistenteno banco de dados Recebe {EmailDto} Responde{message}
+    - Usuário tenta alterar telefone com telefone válido e inexistente no banco de dadosRecebe {PhoneNUmberDto} Responde{message}
+
+PRIVACIDADE E SEGURANÇA:
+    - Usuário tenta alterar privacidade da conta
+    - Recebe {ProfilePrivacyDto} Responde {message}
+    - Usuário tenta bloquear outro usuário
+    - Recebe {blockRelationDto} Responde {message}
+    - Usuário tenta desbloquer outro usuário
+    - Recebe {blockRelationDto} Responde {message}
+    - Usuário tenta listar usuários bloqueados
+    - Recebe {blockRelationDto} Responde {message}
+
+RELATAR PROBLEMA:
+    - Usuário tenta relatar problema -> (202 Accepted)
+    - Recebe {problemDto} Responde {message}
+
+DENUNCIAR PÁGINA:
+    - Usuário tenta denunciar página -> (202 Accepted) {message}
+    - Recebe {reportDto} responde {message}
+
+
+
+
+
+
+
+
+[10:00 AM] Giuliano Mitteroheffer Morelli
+Nós teremos acesso ao figma?
+
+[10:02 AM] Giuliano Mitteroheffer Morelli
+ERD
+
+[10:06 AM] Giuliano Mitteroheffer Morelli
+CREATE DATABASE campanimal WITH ENCODING = 'UTF-8';
+
